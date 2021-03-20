@@ -22,7 +22,9 @@ class ProfileCoordinator: Coordinator {
     func start() {
         let vc = ProfileViewController()
         vc.coordinator = self
+        vc.timeForTimer = 0
         navigationController.pushViewController(vc, animated: false)
+        
     }
     
     func openPhotos() {

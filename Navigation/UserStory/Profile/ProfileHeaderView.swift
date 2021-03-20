@@ -18,6 +18,14 @@ class ProfileHeaderView: UIView {
         return view
     }()
     
+    var timerLabel: UILabel = {
+        let view = UILabel()
+        view.toAutoLayout()
+        view.textColor = .darkGray
+        view.font = UIFont.systemFont(ofSize: 14, weight: .bold)
+        return view
+    }()
+    
     var avatarImageView: UIImageView = {
         let view = UIImageView(image: #imageLiteral(resourceName: "cat"))
         view.layer.cornerRadius = 48
@@ -94,6 +102,7 @@ class ProfileHeaderView: UIView {
         addSubview(profileView)
        
         profileView.addSubview(avatarImageView)
+        profileView.addSubview(timerLabel)
         profileView.addSubview(fullNameLabel)
         profileView.addSubview(statusLabel)
         profileView.addSubview(statusTextField)
@@ -113,6 +122,10 @@ class ProfileHeaderView: UIView {
             fullNameLabel.topAnchor.constraint(equalTo: profileView.topAnchor, constant: 27),
             fullNameLabel.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -16),
             fullNameLabel.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant:  16+96+16),
+            
+            timerLabel.topAnchor.constraint(equalTo: profileView.topAnchor, constant: 7),
+            timerLabel.trailingAnchor.constraint(equalTo: profileView.trailingAnchor, constant: -16),
+            timerLabel.leadingAnchor.constraint(equalTo: profileView.leadingAnchor, constant:  16+96+16),
             
             statusLabel.topAnchor.constraint(equalTo: fullNameLabel.bottomAnchor, constant: 16),
             statusLabel.centerXAnchor.constraint(equalTo: fullNameLabel.centerXAnchor),
