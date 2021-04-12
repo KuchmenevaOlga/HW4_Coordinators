@@ -11,6 +11,7 @@ import UIKit
 
 class ProfileViewController: UIViewController {
     weak var coordinator: ProfileCoordinator?
+
     
     private let profileHeaderView: ProfileHeaderView = {
         let profileHeaderView = ProfileHeaderView()
@@ -41,18 +42,6 @@ class ProfileViewController: UIViewController {
         return view
     }()
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .white
-        setupLayout()
-        let tapGestureShow = UITapGestureRecognizer(target: self, action: #selector(tapToShowAvatar))
-        profileHeaderView.avatarImageView.addGestureRecognizer(tapGestureShow)
-        
-        let tapGestureHide = UITapGestureRecognizer(target: self, action: #selector(tapToHideAvatar))
-        self.closeImageView.addGestureRecognizer(tapGestureHide)
-        self.closeImageView.isUserInteractionEnabled = true
-    }
-    
     private let closeImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -61,10 +50,65 @@ class ProfileViewController: UIViewController {
         return imageView
     }()
     
+    var timeForTimer  = 0
+    
+    var timer: Timer?
+    
+    func createTimer() {
+        if timer == nil {
+            let timer = Timer(timeInterval: 1.0,
+                            target: self,
+                            selector: #selector(fireTimer),
+                            userInfo: nil,
+                            repeats: true)
+            RunLoop.current.add(timer, forMode: .common)
+            self.timer? = timer
+        }
+    }
+    
+    func cancelTimer() {
+        self.timer?.invalidate()
+        self.timer = nil
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        createTimer()
+        view.backgroundColor = .white
+        setupLayout()
+        let tapGestureShow = UITapGestureRecognizer(target: self, action: #selector(tapToShowAvatar))
+        profileHeaderView.avatarImageView.addGestureRecognizer(tapGestureShow)
+        
+        let tapGestureHide = UITapGestureRecognizer(target: self, action: #selector(tapToHideAvatar))
+        self.closeImageView.addGestureRecognizer(tapGestureHide)
+        self.closeImageView.isUserInteractionEnabled = true
+        
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = true
+        timeForTimer = 0
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        cancelTimer()
     }
 
+
+    func timeString(time: TimeInterval) -> String {
+        let hours = Int(time) / 3600
+        let minutes = Int(time) / 60 % 60
+        let seconds = Int(time) % 60
+        return String(format:"%02i:%02i:%02i", hours, minutes, seconds)
+    }
+
+    
+    @objc func fireTimer() {
+        timeForTimer += 1
+        
+        profileHeaderView.timerLabel.text = "time on screen " + timeString(time: TimeInterval(timeForTimer))
+    }
+    
     private func setupLayout() {
         view.addSubview(tableView)
     
@@ -76,6 +120,7 @@ class ProfileViewController: UIViewController {
         ]
         NSLayoutConstraint.activate(constraints)
     }
+    
     private func setupLayoutAnimation(isAnimationStart: Bool) {
         view.addSubview(animationView)
         view.addSubview(profileHeaderView.avatarImageView)
